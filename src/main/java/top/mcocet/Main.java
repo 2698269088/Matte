@@ -17,7 +17,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
 public class Main {
-    private static final int PORT = 8080;
+    private static final int PORT = 80;
 
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);

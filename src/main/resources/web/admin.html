@@ -671,6 +671,7 @@
                     <th>订单ID</th>
                     <th>用户</th>
                     <th>商品</th>
+                    <th>数量</th>
                     <th>价格</th>
                     <th>收货地址</th>
                     <th>商家</th>
@@ -703,12 +704,13 @@
                 <td>${o.id}</td>
                 <td>${o.username}</td>
                 <td>${o.productName}</td>
+                <td>${o.quantity}</td>
                 <td>¥${o.price.toFixed(2)}</td>
                 <td style="font-size:0.85em; max-width:200px;">${addr}</td>
                 <td>${merchant}</td>
                 <td class="${statusClass}">${statusText}</td>
                 <td style="font-size:0.85em;">${o.createdAt}</td>
-                <td>${actionBtn}</td>
+                <td>${actionBtn}<button class="btn-danger" style="margin-left:5px;" onclick="deleteOrder(${o.id})">删除</button></td>
             </tr>`;
         });
 
@@ -1278,6 +1280,18 @@
             const result = await response.json();
             showMessage(result.message, result.success ? 'success' : 'error');
             if (result.success) loadProducts();
+        } catch (e) {
+            showMessage('删除失败', 'error');
+        }
+    }
+
+    async function deleteOrder(orderId) {
+        if (!confirm('确定要删除这个订单吗？此操作不可恢复。')) return;
+        try {
+            const response = await authFetch(`/api/admin/orders/${orderId}`, { method: 'DELETE' });
+            const result = await response.json();
+            showMessage(result.message, result.success ? 'success' : 'error');
+            if (result.success) loadOrders();
         } catch (e) {
             showMessage('删除失败', 'error');
         }

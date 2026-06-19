@@ -78,6 +78,8 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 8px;
+            position: relative;
+            z-index: 1;
         }
         .category-section {
             background: rgba(255, 255, 255, 0.1);
@@ -89,29 +91,51 @@
         .product-card {
             background: white;
             border-radius: 12px;
-            overflow: hidden;
+            overflow: visible;
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
             transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            z-index: 1;
         }
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            z-index: 100;
         }
         .product-image {
             width: 100%;
-            height: 220px;
-            object-fit: cover;
+            min-height: 220px;
             background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #999;
             font-size: 0.9em;
+            position: relative;
+            cursor: zoom-in;
+            border-radius: 12px 12px 0 0;
+            overflow: visible;
+            z-index: 1;
         }
         .product-image img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            z-index: 1;
+            display: block;
+        }
+        .product-card:hover .product-image {
+            z-index: 1000;
+            overflow: visible;
+        }
+        .product-card:hover .product-image img {
+            transform: scale(1.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1001;
+            position: relative;
         }
         .product-info {
             padding: 10px;

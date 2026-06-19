@@ -34,6 +34,9 @@ public class AdminHandler implements HttpHandler {
         } else if ("POST".equalsIgnoreCase(method) && path.matches("/api/admin/orders/\\d+/deliver")) {
             if (!AuthHandler.requireAdmin(exchange)) return;
             handleDeliverOrder(exchange, path);
+        } else if ("DELETE".equalsIgnoreCase(method) && path.matches("/api/admin/orders/\\d+")) {
+            if (!AuthHandler.requireAdmin(exchange)) return;
+            handleDeleteOrder(exchange, path);
         } else if ("GET".equalsIgnoreCase(method) && "/api/admin/users".equals(path)) {
             if (!AuthHandler.requireAdmin(exchange)) return;
             handleGetUsers(exchange);
@@ -63,6 +66,28 @@ public class AdminHandler implements HttpHandler {
             return;
         } else {
             sendResponse(exchange, 404, "{\"success\":false,\"message\":\"接口不存在\"}");
+        }
+    }
+
+    private void handleDeleteOrder(HttpExchange exchange, String path) throws IOException {
+        int orderId = Integer.parseInt(path.substring("/api/admin/orders/".length()));
+        Connection conn = null;
+        try {
+            conn = DBManager.getConnection();
+            String sql = "DELETE FROM orders WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, orderId);
+                int rows = stmt.executeUpdate();
+                if (rows > 0) {
+                    sendResponse(exchange, 200, "{\"success\":true,\"message\":\"订单已删除\"}");
+                } else {
+                    sendResponse(exchange, 404, "{\"success\":false,\"message\":\"订单不存在\"}");
+                }
+            }
+        } catch (SQLException | InterruptedException e) {
+            sendResponse(exchange, 500, "{\"success\":false,\"message\":\"删除失败\"}");
+        } finally {
+            DBManager.releaseConnection(conn);
         }
     }
 
